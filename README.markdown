@@ -16,29 +16,54 @@ TICoreDataUtilities is offered under the **MIT** license.
 ##Basic Usage
 Copy all the files in the `TICoreDataUtilities` directory into your project.
 
-The only utility available at the moment is `TIManagedObjectContextProvider`.
+The only utility available at the moment is `TICoreDataFactory`.
 
-There's no need to start with the Core Data project templates provided with Xcode, just use a suitable Mac/iPhone OS/iOS application template, add `CoreData.framework`, along with a suitable data model file or bundle, and `#include <CoreData/CoreData.h>` in any files referring to Core Data objects like `NSManagedObjectContext`.
+There's no need to start with the Core Data project templates provided with Xcode, just use a suitable Mac/iPhone OS/iOS application template, add `CoreData.framework`, and create your data model file or bundle.
 
 ###Creating a Managed Object Context
-To create a pre-configured managed object context, with persistent store coordinator etc, set to migrate stores automatically, create an instance of the provider and ask it for a managed object context: 
+To create a pre-configured managed object context, with persistent store coordinator, set to migrate stores automatically, create an instance of the factory and ask it for a managed object context: 
 
-    TIManagedObjectContextProvider *provider = [TIManagedObjectContextProvider managedObjectContextProvider];
-    NSManagedObjectContext *context = [provider managedObjectContext];
+    TICoreDataFactory *factory = [TICoreDataFactory coreDataFactory];
+    NSManagedObjectContext *context = [factory managedObjectContext];
 
 The `managedObjectContext` method will build the underlying Core Data objects, if necessary, from the ground up:
 
-* A persistent store co-ordinator will be created, using some default settings, all of which may be overridden:
-  * `storeDataFileName`: the name of the persistent store file on disk. By default, this will be the name of the application, with ".sqlite" appended if it's a SQLite store type, or ".xml" for XML stores.
-  * `storeDataFilePath`: the path to the persistent store file on disk. By default, this will take `storeDataFileName` and append it to the application's documents directory on the iPhone, or `~/Library/Application Support/AppName` on the desktop (creating the directory if necessary).
+* A persistent store coordinator will be created, using some default settings, all of which may be overridden:
+  * `persistentStoreDataFileName`: the name of the persistent store file on disk. By default, this will be the name of the application, with ".sqlite" appended if it's a SQLite store type, or ".xml" for XML stores (currently on the desktop only).
+  * `persistentStoreDataPath`: the path to the persistent store file on disk. By default, this will take `persistentStoreDataFileName` and append it to the application's documents directory on the iPhone, or `~/Library/Application Support/AppName` on the desktop (creating the directory if necessary).
   * `persistentStoreType`: the type of file to use. By default, this uses `NSSQLiteStoreType`.
   * `persistentStoreOptions`: a dictionary of options specified when the persistent store is created. By default, the only option is `NSMigratePersistentStoresAutomaticallyOption` set to `1`.
-* The managed object model object used by default is created using `mergedModelFromBundles:nil`. If you want to specify a different model object, just set the `managedObjectModel` property on the `TIManagedObjectContextProvider` object *before* calling `managedObjectContext`.
+* The managed object model object used by default is created using `mergedModelFromBundles:nil`. If you want to specify a different model object, just set the `managedObjectModel` property on the `TICoreDataFactory` object *before* calling `managedObjectContext`.
+
+###Specifying Options
+If you need to specify your own options to override the defaults, just set them as properties:
+
+    TICoreDataFactory *factory = [TICoreDataFactory coreDataFactory];
+    [factory setPersistentStoreType:NSXMLStoreType];
+    [factory setPersistentStoreDataPath:[@"~/Documents/booYeah" stringByExpandingTildeInPath]];
+    NSManagedObjectContext *context = [factory managedObjectContext];
+
+###Dealing with Errors
+`TICoreDataFactory` maintains a `mostRecentError` property, which is set as its name implies.
+
+Ideally, you should conform to the `TICoreDataFactoryDelegate` protocol, and implement the method `coreDataFactory:encounteredError:` to be notified whenever an error occurs:
+
+    - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+    {
+        TICoreDataFactory *factory = [TICoreDataFactory coreDataFactory];
+        [factory setDelegate:self];
+        [self setManagedObjectContext:[factory managedObjectContext]];
+    }
+    
+    - (void)coreDataFactory:(TICoreDataFactory *)aFactory encounteredError:(NSError *)anError
+    {
+        NSLog(@"Error = %@", anError);
+    }
 
 ###Creating Secondary Contexts
-If you `retain` the provider object, you can use it to create secondary contexts for use with e.g. background import operations, like this:
+If you `retain` the factory object, you can use it to create secondary contexts for use with e.g. background import operations, like this:
 
-    NSManagedObjectContext *secondaryContext = [provider secondaryManagedObjectContext];
+    NSManagedObjectContext *secondaryContext = [factory secondaryManagedObjectContext];
 
 The `secondaryManagedObjectContext` method returns a new, `autoreleased` managed object context, with the same persistent store coordinator used by the primary context.
 

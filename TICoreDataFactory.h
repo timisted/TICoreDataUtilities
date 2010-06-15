@@ -8,18 +8,18 @@
 
 #import <CoreData/CoreData.h>
 
-@protocol TIManagedObjectContextProviderDelegate;
+@protocol TICoreDataFactoryDelegate;
 
 
-@interface TIManagedObjectContextProvider : NSObject {
-    __weak NSObject <TIManagedObjectContextProviderDelegate> *_delegate;
+@interface TICoreDataFactory : NSObject {
+    __weak NSObject <TICoreDataFactoryDelegate> *_delegate;
     
     NSManagedObjectContext *_managedObjectContext;
     NSPersistentStoreCoordinator *_persistentStoreCoordinator;
     NSManagedObjectModel *_managedObjectModel;
     
-    NSString *_storeDataFileName;
-    NSString *_storeDataPath;
+    NSString *_persistentStoreDataFileName;
+    NSString *_persistentStoreDataPath;
     
     NSString *_persistentStoreType;
     NSDictionary *_persistentStoreOptions;
@@ -27,18 +27,18 @@
     NSError *_mostRecentError;
 }
 
-+ (id)managedObjectContextProvider;
++ (id)coreDataFactory;
 
 - (NSManagedObjectContext *)secondaryManagedObjectContext;
 
-@property (nonatomic, assign) NSObject <TIManagedObjectContextProviderDelegate> *delegate;
+@property (nonatomic, assign) NSObject <TICoreDataFactoryDelegate> *delegate;
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;
 
-@property (nonatomic, retain) NSString *storeDataFileName;
-@property (nonatomic, retain) NSString *storeDataPath;
+@property (nonatomic, retain) NSString *persistentStoreDataFileName;
+@property (nonatomic, retain) NSString *persistentStoreDataPath;
 
 @property (nonatomic, assign) NSString *persistentStoreType;
 @property (nonatomic, retain) NSDictionary *persistentStoreOptions;
@@ -48,8 +48,8 @@
 @end
 
 
-@protocol TIManagedObjectContextProviderDelegate
+@protocol TICoreDataFactoryDelegate
 @optional
-- (void)managedObjectContextProvider:(TIManagedObjectContextProvider *)aProvider receivedError:(NSError *)anError;
+- (void)coreDataFactory:(TICoreDataFactory *)aFactory encounteredError:(NSError *)anError;
 
 @end

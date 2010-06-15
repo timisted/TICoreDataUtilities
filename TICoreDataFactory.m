@@ -6,16 +6,16 @@
 //  Copyright 2010 Tim Isted. All rights reserved.
 //
 
-#import "TIManagedObjectContextProvider.h"
+#import "TICoreDataFactory.h"
 
-@interface TIManagedObjectContextProvider ()
+@interface TICoreDataFactory ()
 
 - (void)_notifyDelegateAndSetError:(NSError *)anError;
 
 @end
 
 
-@implementation TIManagedObjectContextProvider
+@implementation TICoreDataFactory
 
 #pragma mark -
 #pragma mark Errors
@@ -23,8 +23,8 @@
 {
     [self setMostRecentError:anError];
     
-    if( [[self delegate] respondsToSelector:@selector(managedObjectContextProvider:receivedError:)] )
-        [[self delegate] managedObjectContextProvider:self receivedError:anError];
+    if( [[self delegate] respondsToSelector:@selector(coreDataFactory:encounteredError:)] )
+        [[self delegate] coreDataFactory:self encounteredError:anError];
 }
 
 #pragma mark -
@@ -53,7 +53,7 @@
     
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     
-    NSURL *urlForStore = [NSURL fileURLWithPath:[self storeDataPath]];
+    NSURL *urlForStore = [NSURL fileURLWithPath:[self persistentStoreDataPath]];
     
     [self setMostRecentError:nil];
     NSError *error = nil;
@@ -74,9 +74,9 @@
     return _managedObjectModel;
 }
 
-- (NSString *)storeDataPath
+- (NSString *)persistentStoreDataPath
 {
-    if( _storeDataPath ) return _storeDataPath;
+    if( _persistentStoreDataPath ) return _persistentStoreDataPath;
 
 #if TARGET_OS_MAC && !(TARGET_OS_IPHONE)
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
@@ -94,14 +94,14 @@
 #else
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 #endif
-    _storeDataPath = [[directory stringByAppendingPathComponent:[self storeDataFileName]] retain];
+    _persistentStoreDataPath = [[directory stringByAppendingPathComponent:[self persistentStoreDataFileName]] retain];
     
-    return _storeDataPath;
+    return _persistentStoreDataPath;
 }
 
-- (NSString *)storeDataFileName
+- (NSString *)persistentStoreDataFileName
 {
-    if( _storeDataFileName ) return _storeDataFileName;
+    if( _persistentStoreDataFileName ) return _persistentStoreDataFileName;
     
     NSString *fileName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
     if( [[self persistentStoreType] isEqualToString:NSSQLiteStoreType] )
@@ -110,9 +110,9 @@
     else if( [[self persistentStoreType] isEqualToString:NSXMLStoreType] )
         fileName = [fileName stringByAppendingPathExtension:@"xml"];
 #endif
-    _storeDataFileName = [fileName retain];
+    _persistentStoreDataFileName = [fileName retain];
     
-    return _storeDataFileName;
+    return _persistentStoreDataFileName;
 }
 
 - (NSString *)persistentStoreType
@@ -139,7 +139,7 @@
     return [super init];
 }
 
-+ (id)managedObjectContextProvider
++ (id)coreDataFactory
 {
     return [[[self alloc] init] autorelease];
 }
@@ -150,8 +150,8 @@
     [_persistentStoreCoordinator release];
     [_managedObjectModel release];
     
-    [_storeDataFileName release];
-    [_storeDataPath release];
+    [_persistentStoreDataFileName release];
+    [_persistentStoreDataPath release];
     
     [_persistentStoreOptions release];
     
@@ -168,8 +168,8 @@
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 
-@synthesize storeDataFileName = _storeDataFileName;
-@synthesize storeDataPath = _storeDataPath;
+@synthesize persistentStoreDataFileName = _persistentStoreDataFileName;
+@synthesize persistentStoreDataPath = _persistentStoreDataPath;
 
 @synthesize persistentStoreType = _persistentStoreType;
 @synthesize persistentStoreOptions = _persistentStoreOptions;
