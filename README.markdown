@@ -14,11 +14,11 @@ TICoreDataUtilities is offered under the **MIT** license.
 * Easy creation of a Managed Object Context (MOC), with auto-generation of Persistent Store Coordinator, Managed Object Model merged from bundles, etc, using just one line of code.
 
 ##Basic Usage
-Copy all the files in the `TIManagedObjectExtensions` directory into your project.
+Copy all the files in the `TICoreDataUtilities` directory into your project.
 
 The only utility available at the moment is `TIManagedObjectContextProvider`.
 
-There's no need to start with the Core Data project templates provided with Xcode, just use a suitable Mac/iPhone OS/iOS application template, add `CoreData.framework` and `#include <CoreData/CoreData.h>` in any files referring to Core Data objects, then add a data model file/bundle.
+There's no need to start with the Core Data project templates provided with Xcode, just use a suitable Mac/iPhone OS/iOS application template, add `CoreData.framework`, along with a suitable data model file or bundle, and `#include <CoreData/CoreData.h>` in any files referring to Core Data objects like `NSManagedObjectContext`.
 
 ###Creating a Managed Object Context
 To create a pre-configured managed object context, with persistent store coordinator etc, set to migrate stores automatically, create an instance of the provider and ask it for a managed object context: 
