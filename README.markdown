@@ -39,7 +39,7 @@ The `managedObjectContext` method will build the underlying Core Data objects, i
 If you need to specify your own options to override the defaults, just set them as properties:
 
     TICoreDataFactory *factory = [TICoreDataFactory coreDataFactory];
-    [factory setPersistentStoreType:NSXMLStoreType];
+    [factory setPersistentStoreType:NSBinaryStoreType];
     [factory setPersistentStoreDataPath:[@"~/Documents/booYeah" stringByExpandingTildeInPath]];
     NSManagedObjectContext *context = [factory managedObjectContext];
 
@@ -66,6 +66,9 @@ If you `retain` the factory object, you can use it to create secondary contexts 
     NSManagedObjectContext *secondaryContext = [factory secondaryManagedObjectContext];
 
 The `secondaryManagedObjectContext` method returns a new, `autoreleased` managed object context, with the same persistent store coordinator used by the primary context.
+
+###Notes
+Assuming you start with a standard (non-Core Data) application template, don't forget to tell the managed object context to `save:`!
 
 ##To Do List
 * Merge `TIManagedObjectExtensions` into `TICoreDataUtilities`.
