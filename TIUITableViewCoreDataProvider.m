@@ -27,6 +27,7 @@
 - (BOOL)_delegateWasAskedToConfigureCell:(UITableViewCell *)aCell forObject:(NSManagedObject *)anObject;
 - (BOOL)_askDelegateWhetherWeShouldDeleteObject:(NSManagedObject *)anObject;
 - (BOOL)_askDelegateWhetherWeCanEditRowForObject:(NSManagedObject *)anObject;
+- (BOOL)_askDelegateWhetherWeShouldSelectAnObject:(NSManagedObject *)anObject;
 - (void)_notifyDelegateThatObjectWasSelected:(NSManagedObject *)anObject;
 
 - (void)_configureCell:(UITableViewCell *)aCell forObject:(NSManagedObject *)anObject;
@@ -71,6 +72,14 @@
         return YES;
     
     return [[self delegate] tableViewCoreDataProvider:self canEditRowForObject:anObject];
+}
+
+- (BOOL)_askDelegateWhetherWeShouldSelectAnObject:(NSManagedObject *)anObject
+{
+    if( ![[self delegate] respondsToSelector:@selector(tableViewCoreDataProvider:shouldSelectObject:)] )
+        return YES;
+    
+    return [[self delegate] tableViewCoreDataProvider:self shouldSelectObject:anObject];
 }
 
 - (void)_notifyDelegateThatObjectWasSelected:(NSManagedObject *)anObject
@@ -241,6 +250,16 @@
 
 #pragma mark -
 #pragma mark Table View Delegate
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    
+    if( [self _askDelegateWhetherWeShouldSelectAnObject:object] )
+        return indexPath;
+    
+    return nil;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];

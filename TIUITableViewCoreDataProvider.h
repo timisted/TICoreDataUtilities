@@ -81,5 +81,6 @@
 - (BOOL)tableViewCoreDataProvider:(TIUITableViewCoreDataProvider *)aProvider shouldDeleteObject:(NSManagedObject *)anObject;
 - (BOOL)tableViewCoreDataProvider:(TIUITableViewCoreDataProvider *)aProvider canEditRowForObject:(NSManagedObject *)anObject;
 - (void)tableViewCoreDataProvider:(TIUITableViewCoreDataProvider *)aProvider objectWasSelected:(NSManagedObject *)anObject;
+- (BOOL)tableViewCoreDataProvider:(TIUITableViewCoreDataProvider *)aProvider shouldSelectObject:(NSManagedObject *)anObject;
 
 @end
