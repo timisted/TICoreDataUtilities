@@ -76,7 +76,7 @@ When I'm prototyping an app, or working on something in abstraction, I find I fr
 
 To avoid this, `TIUITableViewCoreDataProvider` sets itself as the data source and delegate of a table view, and handles most of the work necessary to display information, handle deletion, etc. It uses an `NSFetchedResultsController`, for which it is also the delegate.
 
-You can either supply a fetch request, or simply specify an entity name and the name of an attribute to be displayed, and it will handle the rest. By default, it will simply set the `text` of the cell's `textLabel`. It's easy to configure the cell yourself, however, through the use of a delegate callback. 
+You can either supply a fetch request, or specify an entity name and the name of an attribute to be displayed, and it will handle the rest. By default, it will simply set the `text` of each cell's `textLabel`--if the attribute is an `NSString`, it's used as is, otherwise the provider asks the attribute for its `description`. It's easy to customize cell display, however, by configuring the cell yourself through the use of a delegate callback.
 
 Delegate callbacks are also used to determine whether objects are editable, or should be deleted. Each callback refers to the relevant managed object instance, so you don't have to worry about calling `objectAtIndexPath` etc.
 
@@ -143,7 +143,7 @@ By default, the provider will allow any row in the table view to be edited. To c
 
 If the user deletes a row, the default behavior is to delete the relevant object from the managed object context. To customize this, implement `tableViewCoreDataProvider:shouldDeleteObject:`.
 
-Once any edits (i.e. deletion of objects) have been made, the default behavior is to tell the managed object context to `save:`. To override this, set the `saveContextAfterEditing` property on the provider object.
+Once any edits (i.e. deletion of objects) have been made, the default behavior is to tell the managed object context to `save:`. To override this, set the `saveContextAfterEditing` property on the provider object to `NO`.
 
 ###Selection of Objects
 When the user taps a row in the interface, the default behavior is to allow selection, then immediately deselect the row (with animation). Implement the `tableViewCoreDataProvider:objectWasSelected:` method to do whatever you need to do when an object is selected. At present there is no way to prevent a row from being automatically **de**selected.
@@ -156,11 +156,21 @@ To prevent the user from being able to select a row for some object, implement `
 Implement the delegate method `tableViewCoreDataProvider:encounteredError:` to be informed of any errors as they occur.
 
 ###Fetched Results Controller settings
-To take advantage of the automatic section capabilities in `NSFetchedResultsController`, set the `sectionNameKeyPath` property on the provider object. The fetched results controller object is created lazily, so the `sectionNameKeyPath` property needs to be set before the provider object is asked for information by the table view. Note that if you specify a section name key path, you must provide suitable sort descriptors.
+To take advantage of the automatic section capabilities in `NSFetchedResultsController`, set the `sectionNameKeyPath` property on the provider object. The fetched results controller object is created lazily, so the `sectionNameKeyPath` property needs to be set before the provider object is asked for information by the table view. Note that if you specify a section name key path, `NSFetchedResultsController` requires you to provide suitable sort descriptors.
 
 By default, the provider doesn't use a cache for the fetched results controller. Set the `cacheName` property to specify a cache.
 
 The provider object will respond to `NSFetchedResultsControllerDelegate` methods to make automatic updates to the table view on a row-by-row basis. If you would prefer just to reload the table view whenever changes occur, set the `reloadsEntireTableViewForAnyChange` property to `YES`.
+
+##Example Projects
+A Mac example project is on its way.
+
+###iPhone - TimeStamps
+There is one example iPhone project included, which mimics the behavior of the default Core Data iPhone Navigation-Based template project with an `Event` entity and `timeStamp` attribute. 
+
+The application delegate uses `TICoreDataFactory` to generate the Core Data stack, including the managed object context, which it passes to the root view controller at launch. The view controller implements `tableViewCoreDataProvider:objectWasSelected:` to log a message to the console whenever the user selects a row.
+
+Note that the example project saves the managed object context whenever new objects are added, and uses the default bevahior of the provider object to save the context whenever objects are deleted, so there's no need for the app delegate to `save:` the context at termination. 
 
 ##To Do List
 * Add `TINSTableViewCoreDataProvider` class.
