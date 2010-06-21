@@ -186,7 +186,11 @@
     
     if( ![self displayAttributeName] ) return;
     
-    [[aCell textLabel] setText:[anObject valueForKey:[self displayAttributeName]]];
+    id attributeToDisplay = [anObject valueForKey:[self displayAttributeName]];
+    if( [attributeToDisplay isKindOfClass:[NSString class]] )
+        [[aCell textLabel] setText:attributeToDisplay];
+    else
+        [[aCell textLabel] setText:[attributeToDisplay description]];
 }
 
 #pragma mark -
