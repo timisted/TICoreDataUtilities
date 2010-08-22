@@ -8,7 +8,7 @@
 #pragma mark Application Lifecycle
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
-    TICoreDataFactory *factory = [TICoreDataFactory coreDataFactory];
+    TICoreDataFactory *factory = [TICoreDataFactory coreDataFactoryWithMomdName:@"TimeStamps"];
     [[self rootViewController] setManagedObjectContext:[factory managedObjectContext]];
 	
     [[self window] addSubview:[[self navigationController] view]];

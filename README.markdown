@@ -11,8 +11,12 @@ TICoreDataUtilities is offered under the **MIT** license.
 ##Summary
 `TICoreDataUtilities` is a collection of classes (well, currently only **two** classes, I'm not ready to release the rest yet) to make it easier to work with Core Data, or replace much of the template code in Core Data application projects both on the Mac desktop and on iPhone OS/iOS. Functionality includes
 
-* Easy creation of a Managed Object Context (MOC), with auto-generation of Persistent Store Coordinator, Managed Object Model merged from bundles, etc, using just one line of code.
-* ***New*** Easy provision of information to a `UITableView` (on iOS; Mac version on its way), customizable through delegate calls, removing the need for table view data source and delegate callbacks in view controllers.
+* Easy creation of a Managed Object Context (MOC), with auto-generation of Persistent Store Coordinator and Managed Object Model, either merged from bundles or 
+  
+  ***New*** a specified compiled momd file, 
+  
+  all using just one line of code.
+* Easy provision of information to a `UITableView` (on iOS; Mac version on its way), customizable through delegate calls, removing the need for table view data source and delegate callbacks in view controllers.
 
 ##Basic Usage
 Copy all the files in the `TICoreDataUtilities` directory into your project.
@@ -34,7 +38,16 @@ The `managedObjectContext` method will build the underlying Core Data objects, i
   * `persistentStoreDataPath`: the path to the persistent store file on disk. By default, this will take `persistentStoreDataFileName` and append it to the application's documents directory on the iPhone, or `~/Library/Application Support/AppName` on the desktop (creating the directory if necessary).
   * `persistentStoreType`: the type of file to use. By default, this uses `NSSQLiteStoreType`.
   * `persistentStoreOptions`: a dictionary of options specified when the persistent store is created. By default, the only option is `NSMigratePersistentStoresAutomaticallyOption` set to `1`.
-* The managed object model object used by default is created using `mergedModelFromBundles:nil`. If you want to specify a different model object, just set the `managedObjectModel` property on the `TICoreDataFactory` object *before* calling `managedObjectContext`.
+  
+* The managed object model object used by default is created using `mergedModelFromBundles:nil`. You can override this behavior either by setting the `managedObjectModel` property on the `TICoreDataFactory` object to your own model object, or by specifying that it should use a specified `.momd` file (a compiled data model bundle) using one of three options:
+  
+    * use the class method `coreDataFactoryWithMomdName:`
+    * use `initWithMomdName:` to initialize the factory
+    * set the `momdName` property on the factory before requesting a managed object context
+  
+  For each of these options, you specify the name of the *compiled* managed object model, without its extension (like `initWithWindowNibName:` for `NSWindowController` and `initWithNibName:` for `UIViewController`). The name of the compiled managed object model will be the same as the managed object model file, but with spaces changed to underscores  (e.g. Test Model.xcdatamodeld will be compiled to Test_Model.momd). 
+  
+  If you don't have a data model *bundle*, i.e. just a single data model file, this will also be picked up by `TICoreDataFactory`, even though it will be compiled to a `.mom` file rather than `.momd`.
 
 ###Specifying Options
 If you need to specify your own options to override the defaults, just set them as properties:

@@ -28,6 +28,8 @@
     
     NSManagedObjectContext *_managedObjectContext;
     NSPersistentStoreCoordinator *_persistentStoreCoordinator;
+    
+    NSString *_momdName;
     NSManagedObjectModel *_managedObjectModel;
     
     NSString *_persistentStoreDataFileName;
@@ -39,7 +41,11 @@
     NSError *_mostRecentError;
 }
 
+- (id)init;
+- (id)initWithMomdName:(NSString *)aMomdName;
+
 + (id)coreDataFactory;
++ (id)coreDataFactoryWithMomdName:(NSString *)aMomdName;
 
 - (NSManagedObjectContext *)secondaryManagedObjectContext;
 
@@ -47,6 +53,8 @@
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
+@property (nonatomic, retain) NSString *momdName;
 @property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;
 
 @property (nonatomic, retain) NSString *persistentStoreDataFileName;

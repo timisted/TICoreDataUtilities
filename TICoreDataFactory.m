@@ -81,7 +81,23 @@
 {
     if( _managedObjectModel ) return _managedObjectModel;
     
-    _managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];
+    NSURL *modelURL = nil;
+    
+    if( _momdName ) { // Try compiled data model bundle
+        NSString *fileURL = [[NSBundle mainBundle] pathForResource:_momdName ofType:@"momd"];
+        modelURL = fileURL ? [NSURL fileURLWithPath:fileURL] : nil;
+    }
+    
+    if( _momdName && !modelURL ) { // Try compiled single data model file
+        NSString *fileURL = [[NSBundle mainBundle] pathForResource:_momdName ofType:@"mom"];
+        modelURL = fileURL ? [NSURL fileURLWithPath:fileURL] : nil;
+    }
+    
+    if( modelURL ) {
+        _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    } else {
+        _managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];
+    }
     
     return _managedObjectModel;
 }
@@ -148,7 +164,17 @@
 #pragma mark Initialization and Deallocation
 - (id)init
 {
-    return [super init];
+    return [self initWithMomdName:nil];
+}
+
+- (id)initWithMomdName:(NSString *)aMomdName
+{
+    self = [super init];
+    if( !self ) return nil;
+    
+    _momdName = aMomdName;
+    
+    return self;
 }
 
 + (id)coreDataFactory
@@ -156,10 +182,17 @@
     return [[[self alloc] init] autorelease];
 }
 
++ (id)coreDataFactoryWithMomdName:(NSString *)aMomdName
+{
+    return [[[self alloc] initWithMomdName:aMomdName] autorelease];
+}
+
 - (void)dealloc
 {
     [_managedObjectContext release];
     [_persistentStoreCoordinator release];
+    
+    [_momdName release];
     [_managedObjectModel release];
     
     [_persistentStoreDataFileName release];
@@ -178,6 +211,8 @@
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
+@synthesize momdName = _momdName;
 @synthesize managedObjectModel = _managedObjectModel;
 
 @synthesize persistentStoreDataFileName = _persistentStoreDataFileName;
