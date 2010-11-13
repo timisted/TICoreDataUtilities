@@ -45,9 +45,9 @@ The `managedObjectContext` method will build the underlying Core Data objects, i
     * use `initWithMomdName:` to initialize the factory
     * set the `momdName` property on the factory before requesting a managed object context
   
-  For each of these options, you specify the name of the *compiled* managed object model, without its extension (like `initWithWindowNibName:` for `NSWindowController` and `initWithNibName:` for `UIViewController`). The name of the compiled managed object model will be the same as the managed object model file, but with spaces changed to underscores  (e.g. Test Model.xcdatamodeld will be compiled to Test_Model.momd). 
+  For each of these options, you specify the name of the *compiled* managed object model, without its extension (like `initWithWindowNibName:` for `NSWindowController` and `initWithNibName:` for `UIViewController`). The name of the compiled managed object model will be the same as the managed object model file, but with spaces changed to underscores  (e.g. `Test Model.xcdatamodeld` will be compiled to `Test_Model.momd`). 
   
-  If you don't have a data model *bundle*, i.e. just a single data model file, this will also be picked up by `TICoreDataFactory`, even though it will be compiled to a `.mom` file rather than `.momd`.
+  If you don't have a data model *bundle*, i.e. you have just a single data model file, this will also be picked up by `TICoreDataFactory`, even though it will be compiled to a `.mom` file rather than `.momd`.
 
 ###Specifying Options
 If you need to specify your own options to override the defaults, just set them as properties:
