@@ -113,12 +113,13 @@
     
     [self setMostRecentError:nil];
     NSError *error = nil;
-    
-    if ( ![[NSFileManager defaultManager] fileExistsAtPath:directory isDirectory:NULL] ) {
-		if (![[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:NO attributes:nil error:&error]) {
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    if ( ![fileManager fileExistsAtPath:directory isDirectory:NULL] ) {
+		if (![fileManager createDirectoryAtPath:directory withIntermediateDirectories:NO attributes:nil error:&error]) {
             [self _notifyDelegateAndSetError:error];
 		}
     }
+    [fileManager release], fileManager = nil;
 #else
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 #endif
