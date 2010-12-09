@@ -169,7 +169,7 @@ To prevent the user from being able to select a row for some object, implement `
 Implement the delegate method `tableViewCoreDataProvider:encounteredError:` to be informed of any errors as they occur.
 
 ###Fetched Results Controller settings
-To take advantage of the automatic section capabilities in `NSFetchedResultsController`, set the `sectionNameKeyPath` property on the provider object. The fetched results controller object is created lazily, so the `sectionNameKeyPath` property needs to be set before the provider object is asked for information by the table view. Note that if you specify a section name key path, `NSFetchedResultsController` requires you to provide suitable sort descriptors.
+To take advantage of the automatic section capabilities in `NSFetchedResultsController`, set the `sectionNameKeyPath` property on the provider object. The fetched results controller object is created lazily, so the `sectionNameKeyPath` property needs to be set before the provider object is asked for information by the table view. Note that if you specify a section name key path, `NSFetchedResultsController` requires you to provide suitable sort descriptors. **Update** the section name key path will now be used as the section title.
 
 By default, the provider doesn't use a cache for the fetched results controller. Set the `cacheName` property to specify a cache.
 
