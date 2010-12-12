@@ -49,7 +49,7 @@
 
 - (NSManagedObjectContext *)secondaryManagedObjectContext;
 
-@property (nonatomic, assign) NSObject <TICoreDataFactoryDelegate> *delegate;
+@property (nonatomic, assign) __weak NSObject <TICoreDataFactoryDelegate> *delegate;
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;

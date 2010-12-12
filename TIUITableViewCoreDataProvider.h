@@ -52,7 +52,7 @@
 - (void)performFetch;
 - (void)performFetchAndReloadTableView;
 
-@property (nonatomic, assign) NSObject <TIUITableViewCoreDataProviderDelegate> *delegate;
+@property (nonatomic, assign) __weak NSObject <TIUITableViewCoreDataProviderDelegate> *delegate;
 @property (nonatomic, retain) NSError *mostRecentError;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
