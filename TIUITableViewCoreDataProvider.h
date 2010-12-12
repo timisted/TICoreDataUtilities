@@ -24,7 +24,7 @@
 @protocol TIUITableViewCoreDataProviderDelegate;
 
 @interface TIUITableViewCoreDataProvider : NSObject <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate> {
-    __weak NSObject <TIUITableViewCoreDataProviderDelegate> *_delegate;
+    NSObject <TIUITableViewCoreDataProviderDelegate> *_delegate;
     NSError *_mostRecentError;
     
     NSManagedObjectContext *_managedObjectContext;
@@ -52,7 +52,7 @@
 - (void)performFetch;
 - (void)performFetchAndReloadTableView;
 
-@property (nonatomic, assign) __weak NSObject <TIUITableViewCoreDataProviderDelegate> *delegate;
+@property (nonatomic, assign) NSObject <TIUITableViewCoreDataProviderDelegate> *delegate;
 @property (nonatomic, retain) NSError *mostRecentError;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
