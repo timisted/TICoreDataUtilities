@@ -43,6 +43,7 @@
 
 - (id)init;
 - (id)initWithMomdName:(NSString *)aMomdName;
+- (id)initWithMomdName:(NSString *)aMomdName delegate:(NSObject <TICoreDataFactoryDelegate> *)aDelegate;
 
 + (id)coreDataFactory;
 + (id)coreDataFactoryWithMomdName:(NSString *)aMomdName;

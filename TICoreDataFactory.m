@@ -157,7 +157,8 @@
 {
     if( _persistentStoreOptions ) return _persistentStoreOptions;
     
-    _persistentStoreOptions = [[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSMigratePersistentStoresAutomaticallyOption] retain];
+    _persistentStoreOptions = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+    
     return _persistentStoreOptions;
 }
 
@@ -170,10 +171,16 @@
 
 - (id)initWithMomdName:(NSString *)aMomdName
 {
+    return [self initWithMomdName:aMomdName delegate:nil];
+}
+
+- (id)initWithMomdName:(NSString *)aMomdName delegate:(NSObject <TICoreDataFactoryDelegate> *)aDelegate
+{
     self = [super init];
     if( !self ) return nil;
     
-    _momdName = aMomdName;
+    _momdName = [aMomdName retain];
+    _delegate = aDelegate;
     
     return self;
 }
