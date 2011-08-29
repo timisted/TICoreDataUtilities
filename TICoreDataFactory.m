@@ -55,6 +55,7 @@
 {
     NSManagedObjectContext *secondaryContext = [[NSManagedObjectContext alloc] init];
     [secondaryContext setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
+    [secondaryContext setUndoManager:nil];
     
     return [secondaryContext autorelease];
 }
